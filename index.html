@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>刺玫会 · 入服问卷</title>
+    <script src="https://web3forms.com/client/script.js" async defer></script>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Microsoft YaHei", sans-serif; background: #f5f5f0; color: #1a1a1a; max-width: 640px; margin: 2rem auto; padding: 0 1rem; }
+        h1 { font-size: 1.5rem; border-left: 4px solid #8B4513; padding-left: 0.8rem; }
+        .notice { background: #fff; border: 1px solid #d0d0c8; border-radius: 8px; padding: 1rem; margin: 1rem 0; font-size: 0.9rem; color: #4a4a4a; }
+        .form-group { margin-bottom: 1.2rem; }
+        label { display: block; font-weight: 600; margin-bottom: 0.3rem; font-size: 0.9rem; }
+        input, select, textarea { width: 100%; padding: 0.6rem; border: 1px solid #d0d0c8; border-radius: 6px; font-size: 0.95rem; box-sizing: border-box; background: #fff; }
+        textarea { resize: vertical; min-height: 80px; }
+        button { background: #8B4513; color: #fff; border: none; padding: 0.8rem 1.5rem; border-radius: 40px; font-size: 1rem; cursor: pointer; width: 100%; margin-top: 1rem; }
+        button:hover { background: #A0522D; }
+        .h-captcha { margin: 1rem 0; }
+        .section-title { font-size: 1.05rem; font-weight: 700; color: #8B4513; border-bottom: 2px solid #d0d0c8; padding-bottom: 0.3rem; margin: 1.5rem 0 0.8rem 0; }
+        a { color: #8B4513; }
+    </style>
+</head>
+<body>
+    <h1>刺玫会 · 入服问卷</h1>
+    <div class="notice">
+        <strong>提示：</strong>本服设有 20 级准入限制，密码需在通过问卷审核后，于 QQ 群内获取。请认真填写以下内容，管理员将进行人工审核。问卷内容仅用于入服审核，不会对外公开。真诚是唯一的必杀技——问卷内容应就事实进行填写，如有撒谎、欺假、隐瞒，则更劣一步。
+    </div>
+
+    <form action="https://api.web3forms.com/submit" method="POST">
+        <input type="hidden" name="access_key" value="2aa01217-4116-4361-85f9-f4e2db3414f3">
+        <input type="hidden" name="subject" value="刺玫会入服问卷申请">
+        <input type="hidden" name="from_name" value="刺玫会问卷系统">
+
+        <!-- ============================================================ -->
+        <!-- 基本信息 -->
+        <!-- ============================================================ -->
+        <div class="section-title">基本信息</div>
+
+        <div class="form-group">
+            <label>你的游戏 ID（中国版账号名）</label>
+            <input type="text" name="游戏ID" required placeholder="例如：南极洲丶刺玫">
+        </div>
+
+        <div class="form-group">
+            <label>你的 QQ 号</label>
+            <input type="text" name="QQ号" required placeholder="方便管理员核对进群申请">
+        </div>
+
+        <!-- ============================================================ -->
+        <!-- 游戏认知 -->
+        <!-- ============================================================ -->
+        <div class="section-title">游戏认知</div>
+
+        <div class="form-group">
+            <label>1. 你玩 Minecraft 多久了？</label>
+            <select name="游玩时长" required>
+                <option value="">请选择</option>
+                <option value="小于3个月">小于 3 个月</option>
+                <option value="3个月到1年">3 个月到 1 年</option>
+                <option value="1年以上">1 年以上</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>2. 你是否了解服务器允许抄家、允许 PvP？</label>
+            <select name="玩法认知" required>
+                <option value="">请选择</option>
+                <option value="了解并接受">了解并接受</option>
+                <option value="了解但不太接受">了解，但不太接受</option>
+                <option value="不了解">不了解</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>3. 你认为在允许抄家的服务器中，玩家应该如何保护自己的基地？</label>
+            <textarea name="基地保护认知" required placeholder="请用一两句话说明"></textarea>
+        </div>
+
+        <!-- ============================================================ -->
+        <!-- 道德素质 -->
+        <!-- ============================================================ -->
+        <div class="section-title">道德素质</div>
+
+        <div class="form-group">
+            <label>4. 你是否曾在其他服务器因破坏规则被封禁？如果是，请说明原因。</label>
+            <textarea name="封禁历史" placeholder="没有请填无"></textarea>
+        </div>
+
+        <div class="form-group">
+            <label>5. 你如何理解“在游戏中破坏他人成果”这件事？</label>
+            <textarea name="破坏认知" required placeholder="请用一两句话说明你的看法"></textarea>
+        </div>
+
+        <div class="form-group">
+            <label>6. 如果你在游戏中与他人发生矛盾，你会怎么处理？</label>
+            <textarea name="矛盾处理" required placeholder="请用一两句话说明"></textarea>
+        </div>
+
+        <div class="form-group">
+            <label>7. 你是否曾因游戏中的情绪而在现实中发泄？</label>
+            <select name="情绪管理" required>
+                <option value="">请选择</option>
+                <option value="从未">从未</option>
+                <option value="偶尔">偶尔</option>
+                <option value="经常">经常</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>8. 当你在服务器中看到有人破坏规则时，你会怎么做？</label>
+            <textarea name="规则维护" required placeholder="请用一两句话说明"></textarea>
+        </div>
+
+        <!-- ============================================================ -->
+        <!-- 现实情况 -->
+        <!-- ============================================================ -->
+        <div class="section-title">现实情况</div>
+
+        <div class="form-group">
+            <label>9. 你平时每天大概有多少时间用于游戏？</label>
+            <select name="时间分配" required>
+                <option value="">请选择</option>
+                <option value="少于30分钟">少于 30 分钟</option>
+                <option value="30分钟到2小时">30 分钟到 2 小时</option>
+                <option value="2小时以上">2 小时以上</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>10. 你的学业或工作情况是否允许你稳定参与游戏？</label>
+            <select name="现实状态" required>
+                <option value="">请选择</option>
+                <option value="时间充裕">时间充裕</option>
+                <option value="时间一般">时间一般</option>
+                <option value="时间紧张">时间紧张</option>
+            </select>
+        </div>
+
+        <!-- ============================================================ -->
+        <!-- 规则认同 -->
+        <!-- ============================================================ -->
+        <div class="section-title">规则认同</div>
+
+        <div class="form-group">
+            <label>11. 你是否已阅读并同意遵守 <a href="https://soserver.github.io/wiki/#page-%E6%B8%B8%E7%8E%A9%E8%A7%84%E5%AE%9AV2.0" target="_blank">《刺玫会服务器游玩规定》</a>？</label>
+            <select name="规则认同" required>
+                <option value="">请选择</option>
+                <option value="已阅读并同意">已阅读并同意</option>
+                <option value="未阅读">未阅读</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>12. 你是否愿意维护交流群内的和谐氛围，不发布违规言论？</label>
+            <select name="群内态度" required>
+                <option value="">请选择</option>
+                <option value="愿意">愿意</option>
+                <option value="不愿意">不愿意</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>13. 你是否同意管理员对问卷内容进行人工审核？</label>
+            <select name="审核同意" required>
+                <option value="">请选择</option>
+                <option value="同意">同意</option>
+                <option value="不同意">不同意</option>
+            </select>
+        </div>
+
+        <div class="h-captcha" data-captcha="true"></div>
+
+        <button type="submit">提交问卷</button>
+    </form>
+</body>
+</html>
