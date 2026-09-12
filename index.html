@@ -36,6 +36,9 @@
 </head>
 <body>
     <div class="container">
+        <!-- 页面内提示框 -->
+        <div id="toast" class="toast"></div>
+
         <!-- 标题 -->
         <h1 class="page-title">刺玫会 · 入服问卷</h1>
         <p class="page-subtitle">请认真填写以下内容，管理员将进行人工审核</p>
@@ -208,12 +211,61 @@
     </div>
 
     <script>
+        // ============================================================
+        // 页面内提示框
+        // ============================================================
+        var toastTimer = null;
+
+        function showToast(message, type) {
+            var toast = document.getElementById('toast');
+            if (!toast) return;
+
+            toast.textContent = message;
+            toast.className = 'toast show';
+            if (type) toast.classList.add(type);
+
+            if (toastTimer) clearTimeout(toastTimer);
+            toastTimer = setTimeout(function() {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // ============================================================
+        // 提交处理
+        // ============================================================
         document.querySelector('form').addEventListener('submit', function(e) {
             // ========== 1. 检查 hCaptcha 是否完成 ==========
             var captchaResponse = document.querySelector('[name="h-captcha-response"]');
             if (!captchaResponse || !captchaResponse.value) {
                 e.preventDefault();
-                alert('请先完成人机验证后再提交。');
+                showToast('请先完成人机验证后再提交。', 'warning');
+
+                // 尝试重新加载人机验证
+                var captchaContainer = document.querySelector('.h-captcha');
+                if (captchaContainer) {
+                    captchaContainer.innerHTML = '';
+                    // 移除旧的 hCaptcha 脚本
+                    var oldScript = document.querySelector('script[src*="hcaptcha"]');
+                    if (oldScript) oldScript.remove();
+
+                    // 重新插入脚本
+                    var newScript = document.createElement('script');
+                    newScript.src = 'https://js.hcaptcha.com/1/api.js';
+                    newScript.async = true;
+                    newScript.defer = true;
+                    newScript.onload = function() {
+                        if (typeof hcaptcha !== 'undefined') {
+                            try {
+                                var widgetId = hcaptcha.render(captchaContainer, {
+                                    sitekey: captchaContainer.dataset.sitekey || ''
+                                });
+                            } catch (err) {
+                                console.warn('hCaptcha 重新渲染失败:', err);
+                            }
+                        }
+                    };
+                    document.head.appendChild(newScript);
+                }
                 return false;
             }
 
@@ -225,7 +277,7 @@
                 if (remaining > 0) {
                     e.preventDefault();
                     var minutes = Math.ceil(remaining / 60000);
-                    alert('您已提交过问卷，请等待 ' + minutes + ' 分钟后再试。');
+                    showToast('您已提交过问卷，请等待 ' + minutes + ' 分钟后再试。', 'warning');
                     return false;
                 }
             }
