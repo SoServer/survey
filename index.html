@@ -5,376 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>刺玫会 · 入服问卷</title>
     <link rel="icon" type="image/png" href="favicon.png" />
+    <link rel="stylesheet" href="style.css" />
     <script src="https://web3forms.com/client/script.js" async defer></script>
-    <style>
-        /* ============================================================
-           全局重置与变量
-           ============================================================ */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        :root {
-            --bg-primary: #f5f5f0;
-            --bg-card: #ffffff;
-            --border-color: #d0d0c8;
-            --text-primary: #1a1a1a;
-            --text-secondary: #4a4a4a;
-            --text-muted: #8a8a8a;
-            --accent: #8B4513;
-            --accent-hover: #A0522D;
-            --accent-glow: rgba(139, 69, 19, 0.12);
-            --radius: 12px;
-            --transition: 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Microsoft YaHei", sans-serif;
-            background: var(--bg-primary);
-            color: var(--text-primary);
-            min-height: 100vh;
-            padding: 2rem 1rem;
-            line-height: 1.6;
-            background-image: radial-gradient(ellipse at 20% 50%, rgba(139, 69, 19, 0.04) 0%, transparent 60%),
-                              radial-gradient(ellipse at 80% 20%, rgba(139, 69, 19, 0.03) 0%, transparent 50%);
-            background-attachment: fixed;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        a {
-            color: var(--accent);
-            text-decoration: none;
-            transition: color var(--transition);
-        }
-
-        a:hover {
-            color: var(--accent-hover);
-            text-decoration: underline;
-        }
-
-        /* ============================================================
-           主容器
-           ============================================================ */
-        .container {
-            max-width: 720px;
-            margin: 0 auto;
-        }
-
-        /* ============================================================
-           标题
-           ============================================================ */
-        .page-title {
-            text-align: center;
-            font-size: clamp(1.8rem, 4vw, 2.4rem);
-            font-weight: 700;
-            color: var(--accent);
-            letter-spacing: 2px;
-            margin-bottom: 0.5rem;
-            animation: fadeInDown 0.6s ease forwards;
-        }
-
-        .page-subtitle {
-            text-align: center;
-            font-size: clamp(0.9rem, 1.5vw, 1rem);
-            color: var(--text-muted);
-            margin-bottom: 2rem;
-            letter-spacing: 1px;
-            animation: fadeInDown 0.8s ease forwards;
-        }
-
-        @keyframes fadeInDown {
-            from {
-                opacity: 0;
-                transform: translateY(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* ============================================================
-           提示框
-           ============================================================ */
-        .notice {
-            background: rgba(139, 69, 19, 0.04);
-            border-left: 4px solid var(--accent);
-            border-radius: 0 var(--radius) var(--radius) 0;
-            padding: 1rem 1.2rem;
-            margin-bottom: 2rem;
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-            line-height: 1.8;
-            animation: fadeIn 0.8s ease forwards;
-        }
-
-        .notice strong {
-            color: var(--accent);
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        /* ============================================================
-           表单卡片
-           ============================================================ */
-        .form-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius);
-            padding: 2rem;
-            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
-            animation: fadeInUp 0.8s ease forwards;
-        }
-
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* ============================================================
-           区块标题
-           ============================================================ */
-        .section-title {
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: var(--accent);
-            border-bottom: 2px solid var(--border-color);
-            padding-bottom: 0.4rem;
-            margin: 2rem 0 1rem 0;
-            letter-spacing: 1px;
-        }
-
-        .section-title:first-of-type {
-            margin-top: 0;
-        }
-
-        /* ============================================================
-           表单组
-           ============================================================ */
-        .form-group {
-            margin-bottom: 1.2rem;
-        }
-
-        label {
-            display: block;
-            font-weight: 600;
-            margin-bottom: 0.4rem;
-            font-size: 0.9rem;
-            color: var(--text-primary);
-        }
-
-        label .required {
-            color: #c0392b;
-            margin-left: 0.2rem;
-        }
-
-        input[type="text"],
-        input[type="email"],
-        select,
-        textarea {
-            width: 100%;
-            padding: 0.7rem 0.9rem;
-            border: 2px solid var(--border-color);
-            border-radius: 8px;
-            font-size: 0.95rem;
-            font-family: inherit;
-            color: var(--text-primary);
-            background: #fafaf8;
-            transition: border-color var(--transition), box-shadow var(--transition);
-            outline: none;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        input[type="text"]:focus,
-        input[type="email"]:focus,
-        select:focus,
-        textarea:focus {
-            border-color: var(--accent);
-            box-shadow: 0 0 0 3px var(--accent-glow);
-            background: #fff;
-        }
-
-        input[type="text"]:hover,
-        input[type="email"]:hover,
-        select:hover,
-        textarea:hover {
-            border-color: #b0b0a8;
-        }
-
-        textarea {
-            resize: vertical;
-            min-height: 90px;
-            line-height: 1.6;
-        }
-
-        select {
-            cursor: pointer;
-            appearance: none;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%238a8a8a' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
-            background-repeat: no-repeat;
-            background-position: right 0.9rem center;
-            padding-right: 2.5rem;
-        }
-
-        /* ============================================================
-           按钮
-           ============================================================ */
-        .submit-btn {
-            background: var(--accent);
-            color: #fff;
-            border: none;
-            padding: 0.9rem 2rem;
-            border-radius: 40px;
-            font-size: 1.05rem;
-            font-weight: 700;
-            font-family: inherit;
-            letter-spacing: 1px;
-            cursor: pointer;
-            width: 100%;
-            margin-top: 1.5rem;
-            transition: all var(--transition);
-            box-shadow: 0 4px 16px rgba(139, 69, 19, 0.2);
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        .submit-btn:hover {
-            background: var(--accent-hover);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 24px rgba(139, 69, 19, 0.3);
-        }
-
-        .submit-btn:active {
-            transform: translateY(0) scale(0.98);
-            box-shadow: 0 2px 8px rgba(139, 69, 19, 0.2);
-        }
-
-        /* ============================================================
-           hCaptcha
-           ============================================================ */
-        .h-captcha {
-            margin: 1.2rem 0;
-            display: flex;
-            justify-content: center;
-        }
-
-        /* ============================================================
-           页脚
-           ============================================================ */
-        .footer {
-            text-align: center;
-            margin-top: 2rem;
-            font-size: 0.8rem;
-            color: var(--text-muted);
-        }
-
-        .footer a {
-            color: var(--text-muted);
-        }
-
-        .footer a:hover {
-            color: var(--accent);
-        }
-
-        /* ============================================================
-           电脑端适配
-           ============================================================ */
-        @media (min-width: 769px) {
-            body {
-                padding: 3rem 2rem;
-            }
-
-            .form-card {
-                padding: 2.5rem 3rem;
-            }
-
-            .section-title {
-                font-size: 1.2rem;
-            }
-
-            label {
-                font-size: 0.95rem;
-            }
-
-            input[type="text"],
-            input[type="email"],
-            select,
-            textarea {
-                font-size: 1rem;
-                padding: 0.8rem 1rem;
-            }
-
-            .submit-btn {
-                width: auto;
-                min-width: 240px;
-                display: block;
-                margin-left: auto;
-                margin-right: auto;
-            }
-        }
-
-        /* ============================================================
-           手机端适配
-           ============================================================ */
-        @media (max-width: 768px) {
-            body {
-                padding: 1.2rem 0.8rem;
-            }
-
-            .form-card {
-                padding: 1.5rem 1.2rem;
-            }
-
-            .notice {
-                font-size: 0.85rem;
-                padding: 0.8rem 1rem;
-            }
-
-            .section-title {
-                font-size: 1rem;
-                margin: 1.5rem 0 0.8rem 0;
-            }
-
-            label {
-                font-size: 0.85rem;
-            }
-
-            input[type="text"],
-            input[type="email"],
-            select,
-            textarea {
-                font-size: 0.9rem;
-                padding: 0.6rem 0.8rem;
-            }
-
-            .submit-btn {
-                font-size: 1rem;
-                padding: 0.8rem 1.5rem;
-            }
-        }
-
-        /* ============================================================
-           禁用移动端点击灰色覆盖
-           ============================================================ */
-        button,
-        input,
-        select,
-        textarea,
-        a {
-            -webkit-tap-highlight-color: transparent;
-            -webkit-touch-callout: none;
-        }
-    </style>
     <script>
         // 记录页面加载时间
         var formStartTime = Date.now();
@@ -423,6 +55,7 @@
                 <input type="hidden" name="from_name" value="刺玫会问卷系统">
 
                 <!-- 填写时长记录（隐藏） -->
+                <input type="hidden" name="提交时间" id="submitTime" value="">
                 <input type="hidden" name="填写总时长" id="totalDuration" value="">
                 <input type="hidden" name="各题填写时长" id="perQuestionDuration" value="">
 
@@ -575,14 +208,46 @@
     </div>
 
     <script>
-        document.querySelector('form').addEventListener('submit', function() {
-            var now = Date.now();
+        document.querySelector('form').addEventListener('submit', function(e) {
+            // ========== 1. 检查 hCaptcha 是否完成 ==========
+            var captchaResponse = document.querySelector('[name="h-captcha-response"]');
+            if (!captchaResponse || !captchaResponse.value) {
+                e.preventDefault();
+                alert('请先完成人机验证后再提交。');
+                return false;
+            }
 
-            // 总填写时长
+            // ========== 2. 前端限流：同一设备 30 分钟只能提交一次 ==========
+            var lastSubmit = localStorage.getItem('cmh_survey_last_submit');
+            if (lastSubmit) {
+                var elapsed = Date.now() - parseInt(lastSubmit);
+                var remaining = 30 * 60 * 1000 - elapsed;
+                if (remaining > 0) {
+                    e.preventDefault();
+                    var minutes = Math.ceil(remaining / 60000);
+                    alert('您已提交过问卷，请等待 ' + minutes + ' 分钟后再试。');
+                    return false;
+                }
+            }
+
+            // ========== 3. 记录本次提交时间 ==========
+            var now = Date.now();
+            localStorage.setItem('cmh_survey_last_submit', String(now));
+
+            // ========== 4. 记录提交时间（可读格式） ==========
+            var submitDate = new Date(now);
+            var submitTimeStr = submitDate.getFullYear() + '-' +
+                String(submitDate.getMonth() + 1).padStart(2, '0') + '-' +
+                String(submitDate.getDate()).padStart(2, '0') + ' ' +
+                String(submitDate.getHours()).padStart(2, '0') + ':' +
+                String(submitDate.getMinutes()).padStart(2, '0') + ':' +
+                String(submitDate.getSeconds()).padStart(2, '0');
+            document.getElementById('submitTime').value = submitTimeStr;
+
+            // ========== 5. 计算填写时长 ==========
             var totalDuration = Math.round((now - formStartTime) / 1000);
             document.getElementById('totalDuration').value = totalDuration + ' 秒';
 
-            // 各题填写时长
             var fields = document.querySelectorAll('input[name], select[name], textarea[name]');
             var records = [];
             fields.forEach(function(field) {
