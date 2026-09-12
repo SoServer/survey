@@ -375,6 +375,32 @@
             -webkit-touch-callout: none;
         }
     </style>
+    <script>
+        // 记录页面加载时间
+        var formStartTime = Date.now();
+        // 记录每题开始填写的时间
+        var questionStartTimes = {};
+
+        document.addEventListener('DOMContentLoaded', function() {
+            var fields = document.querySelectorAll('input[name], select[name], textarea[name]');
+            fields.forEach(function(field) {
+                var name = field.getAttribute('name');
+                if (!name || name === 'access_key' || name === 'subject' || name === 'from_name') return;
+
+                field.addEventListener('focus', function() {
+                    if (!questionStartTimes[name]) {
+                        questionStartTimes[name] = Date.now();
+                    }
+                });
+
+                field.addEventListener('change', function() {
+                    if (!questionStartTimes[name]) {
+                        questionStartTimes[name] = Date.now();
+                    }
+                });
+            });
+        });
+    </script>
 </head>
 <body>
     <div class="container">
@@ -395,6 +421,10 @@
                 <input type="hidden" name="access_key" value="2aa01217-4116-4361-85f9-f4e2db3414f3">
                 <input type="hidden" name="subject" value="刺玫会入服问卷申请">
                 <input type="hidden" name="from_name" value="刺玫会问卷系统">
+
+                <!-- 填写时长记录（隐藏） -->
+                <input type="hidden" name="填写总时长" id="totalDuration" value="">
+                <input type="hidden" name="各题填写时长" id="perQuestionDuration" value="">
 
                 <!-- ============================================================ -->
                 <!-- 基本信息 -->
@@ -543,5 +573,42 @@
             <p>&copy; 2026 刺玫会服务器 · 问卷内容仅用于入服审核</p>
         </div>
     </div>
+
+    <script>
+        document.querySelector('form').addEventListener('submit', function() {
+            var now = Date.now();
+
+            // 总填写时长
+            var totalDuration = Math.round((now - formStartTime) / 1000);
+            document.getElementById('totalDuration').value = totalDuration + ' 秒';
+
+            // 各题填写时长
+            var fields = document.querySelectorAll('input[name], select[name], textarea[name]');
+            var records = [];
+            fields.forEach(function(field) {
+                var name = field.getAttribute('name');
+                if (!name || name === 'access_key' || name === 'subject' || name === 'from_name') return;
+                if (questionStartTimes[name]) {
+                    records.push({ name: name, time: questionStartTimes[name] });
+                }
+            });
+
+            records.sort(function(a, b) { return a.time - b.time; });
+
+            var durations = [];
+            var lastTime = formStartTime;
+
+            for (var i = 0; i < records.length; i++) {
+                var gap = Math.round((records[i].time - lastTime) / 1000);
+                durations.push(records[i].name + ': ' + gap + '秒');
+                lastTime = records[i].time;
+            }
+
+            var lastGap = Math.round((now - lastTime) / 1000);
+            durations.push('（提交前）: ' + lastGap + '秒');
+
+            document.getElementById('perQuestionDuration').value = durations.join(' | ');
+        });
+    </script>
 </body>
 </html>
