@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>刺玫会 · Key 生成器</title>
+    <link rel="icon" type="image/png" href="favicon.png" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #f5f5f0;
+            --bg-card: #ffffff;
+            --border-color: #d0d0c8;
+            --text-primary: #1a1a1a;
+            --text-secondary: #4a4a4a;
+            --text-muted: #8a8a8a;
+            --accent: #8B4513;
+            --accent-hover: #A0522D;
+            --radius: 12px;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Microsoft YaHei", sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding: 2rem 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-image: radial-gradient(ellipse at 20% 50%, rgba(139, 69, 19, 0.04) 0%, transparent 60%),
+                              radial-gradient(ellipse at 80% 20%, rgba(139, 69, 19, 0.03) 0%, transparent 50%);
+            background-attachment: fixed;
+        }
+
+        .container {
+            max-width: 500px;
+            width: 100%;
+        }
+
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            padding: 2rem;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            color: var(--accent);
+            text-align: center;
+            margin-bottom: 0.5rem;
+            letter-spacing: 1px;
+        }
+
+        .subtitle {
+            text-align: center;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.2rem;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.4rem;
+            font-size: 0.9rem;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 0.7rem 0.9rem;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-family: inherit;
+            color: var(--text-primary);
+            background: #fafaf8;
+            outline: none;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        input[type="text"]:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(139, 69, 19, 0.12);
+            background: #fff;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 0.9rem 2rem;
+            border: none;
+            border-radius: 40px;
+            font-size: 1rem;
+            font-weight: 700;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            letter-spacing: 1px;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: #fff;
+            box-shadow: 0 4px 16px rgba(139, 69, 19, 0.2);
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 24px rgba(139, 69, 19, 0.3);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0) scale(0.98);
+        }
+
+        .btn-secondary {
+            background: rgba(0, 0, 0, 0.04);
+            color: var(--text-secondary);
+            border: 1px solid var(--border-color);
+            margin-top: 0.6rem;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(0, 0, 0, 0.08);
+        }
+
+        .result-box {
+            margin-top: 1.5rem;
+            background: rgba(139, 69, 19, 0.04);
+            border: 2px solid var(--accent);
+            border-radius: var(--radius);
+            padding: 1.2rem;
+            text-align: center;
+        }
+
+        .result-label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-bottom: 0.4rem;
+            letter-spacing: 1px;
+        }
+
+        .result-key {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--accent);
+            letter-spacing: 2px;
+            font-family: 'Courier New', monospace;
+            word-break: break-all;
+            user-select: all;
+            cursor: pointer;
+        }
+
+        .result-hint {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 0.5rem;
+        }
+
+        .toast {
+            position: fixed;
+            top: 1.5rem;
+            left: 50%;
+            transform: translateX(-50%) translateY(-20px);
+            background: #fff;
+            border: 2px solid var(--accent);
+            border-radius: var(--radius);
+            padding: 0.8rem 1.5rem;
+            font-size: 0.9rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+            z-index: 9999;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .toast.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .history {
+            margin-top: 1.5rem;
+            border-top: 1px solid var(--border-color);
+            padding-top: 1rem;
+        }
+
+        .history-title {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .history-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.4rem 0.6rem;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            transition: background 0.2s ease;
+        }
+
+        .history-item:hover {
+            background: rgba(0, 0, 0, 0.03);
+        }
+
+        .history-item .history-key {
+            font-family: 'Courier New', monospace;
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        .history-item .history-player {
+            color: var(--text-muted);
+            font-size: 0.8rem;
+        }
+
+        .empty-history {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-align: center;
+            padding: 0.5rem 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="toast" id="toast"></div>
+
+    <div class="container">
+        <div class="card">
+            <h1>Key 生成器</h1>
+            <p class="subtitle">刺玫会 · 管理组内部工具</p>
+
+            <div class="form-group">
+                <label>玩家游戏 ID</label>
+                <input type="text" id="playerId" placeholder="输入通过审核的玩家 ID" autocomplete="off">
+            </div>
+
+            <button class="btn btn-primary" onclick="generateKey()">生成 Key</button>
+
+            <div id="resultBox" class="result-box" style="display:none;">
+                <div class="result-label">唯一准入 Key</div>
+                <div class="result-key" id="resultKey" onclick="copyKey()"></div>
+                <div class="result-hint">点击 Key 可复制</div>
+            </div>
+
+            <div class="history">
+                <div class="history-title">最近生成记录</div>
+                <div id="historyList">
+                    <div class="empty-history">暂无记录</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ============================================================
+        // 生成随机 Key
+        // ============================================================
+        function generateRandomKey() {
+            var chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';  // 去掉易混淆的 I O 0 1
+            var part = function(len) {
+                var s = '';
+                for (var i = 0; i < len; i++) {
+                    s += chars.charAt(Math.floor(Math.random() * chars.length));
+                }
+                return s;
+            };
+            return 'CMH-' + part(4) + '-' + part(4);
+        }
+
+        // ============================================================
+        // 生成并显示 Key
+        // ============================================================
+        var currentKey = '';
+
+        function generateKey() {
+            var playerId = document.getElementById('playerId').value.trim();
+            if (!playerId) {
+                showToast('请先输入玩家游戏 ID');
+                return;
+            }
+
+            var key = generateRandomKey();
+            currentKey = key;
+
+            document.getElementById('resultKey').textContent = key;
+            document.getElementById('resultBox').style.display = 'block';
+
+            // 保存到历史记录
+            saveHistory(playerId, key);
+
+            showToast('Key 已生成，点击可复制');
+        }
+
+        // ============================================================
+        // 复制 Key
+        // ============================================================
+        function copyKey() {
+            if (!currentKey) return;
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(currentKey).then(function() {
+                    showToast('已复制到剪贴板');
+                }).catch(function() {
+                    fallbackCopy(currentKey);
+                });
+            } else {
+                fallbackCopy(currentKey);
+            }
+        }
+
+        function fallbackCopy(text) {
+            var textarea = document.createElement('textarea');
+            textarea.value = text;
+            textarea.style.position = 'fixed';
+            textarea.style.opacity = '0';
+            document.body.appendChild(textarea);
+            textarea.select();
+            try {
+                document.execCommand('copy');
+                showToast('已复制到剪贴板');
+            } catch (e) {
+                showToast('复制失败，请手动选择');
+            }
+            document.body.removeChild(textarea);
+        }
+
+        // ============================================================
+        // 历史记录（localStorage）
+        // ============================================================
+        var HISTORY_KEY = 'cmh_keygen_history';
+        var MAX_HISTORY = 20;
+
+        function saveHistory(playerId, key) {
+            var history = loadHistory();
+            history.unshift({
+                playerId: playerId,
+                key: key,
+                time: new Date().toLocaleString('zh-CN')
+            });
+            if (history.length > MAX_HISTORY) {
+                history = history.slice(0, MAX_HISTORY);
+            }
+            localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
+            renderHistory();
+        }
+
+        function loadHistory() {
+            try {
+                var data = localStorage.getItem(HISTORY_KEY);
+                return data ? JSON.parse(data) : [];
+            } catch (e) {
+                return [];
+            }
+        }
+
+        function renderHistory() {
+            var list = document.getElementById('historyList');
+            var history = loadHistory();
+            if (history.length === 0) {
+                list.innerHTML = '<div class="empty-history">暂无记录</div>';
+                return;
+            }
+
+            var html = '';
+            for (var i = 0; i < history.length; i++) {
+                var item = history[i];
+                html += '<div class="history-item">';
+                html += '<span class="history-player">' + item.playerId + '</span>';
+                html += '<span class="history-key" onclick="copyText(\'' + item.key + '\')">' + item.key + '</span>';
+                html += '</div>';
+            }
+            list.innerHTML = html;
+        }
+
+        function copyText(text) {
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(text).then(function() {
+                    showToast('已复制：' + text);
+                });
+            } else {
+                fallbackCopy(text);
+            }
+        }
+
+        // ============================================================
+        // 提示框
+        // ============================================================
+        var toastTimer = null;
+
+        function showToast(message) {
+            var toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.className = 'toast show';
+            if (toastTimer) clearTimeout(toastTimer);
+            toastTimer = setTimeout(function() {
+                toast.classList.remove('show');
+            }, 2500);
+        }
+
+        // ============================================================
+        // 初始化
+        // ============================================================
+        document.addEventListener('DOMContentLoaded', function() {
+            renderHistory();
+            // 回车生成
+            document.getElementById('playerId').addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') generateKey();
+            });
+        });
+    </script>
+</body>
+</html>
